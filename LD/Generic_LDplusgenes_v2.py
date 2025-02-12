@@ -11,7 +11,7 @@ from matplotlib import cm, colors
 from matplotlib.colors import ListedColormap
 
 #configurable variables
-target_chr = 'Chr09'
+target_chr = 'Chr09' #chnage as per needed
 ld_file = "output.ld" #(write the name of the .ld file generated)
 target_loc = 62620720 #(write the position of the sap)
 windowsize1_left = 30000
