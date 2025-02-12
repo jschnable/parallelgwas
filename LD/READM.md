@@ -2,7 +2,7 @@ Steps to calculate LD:
 
 Input vcf filtered file (see the directory to filter vcf data that will help to guide how to filter the vcf data):
 
-Once you have the vcf data, use this code on terminal to make the bed files.
+Once you have the filtered file vcf data, use this code on terminal to make the bed files or bfiles.
 
 plink2 --vcf example.vcf.gz --make-bed --out ex
 
