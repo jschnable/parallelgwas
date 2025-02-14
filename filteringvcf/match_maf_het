@@ -1,1 +1,10 @@
+#genotype_imputed.vcf is imputed file
+#Lines in pheno is the name of the genotypes(only names)
 
+ml vcftools
+vcftools --vcf genotype_imputed.vcf --out genotype_imputed_Filter1 --keep LinesInPheno.csv --recode
+
+vcftools --vcf genotype_imputed_Filter1.recode.vcf --out genotype_imputed_Filter2 --maf 0.05 --recode
+
+ml bcftools
+bcftools filter genotype_imputed_Filter2.recode.vcf --exclude 'F_PASS(GT=="het") > 0.1' -o genotype_imputed_Filter3.vcf
