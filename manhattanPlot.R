@@ -73,7 +73,7 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
       scale_x_continuous(label = x_axis_set[[deparse(substitute(chr))]], 
                          breaks = x_axis_set$center) +
       scale_color_manual(values = colors) + 
-      labs(title = main, x = 'Chromosome', y = ylab) + 
+      labs(title = main, x = 'Chromosome', y = ylab, color = NULL) + 
       theme_use + 
       theme(legend.position = 'top')
     print(manhattan)
@@ -91,7 +91,7 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
       scale_x_continuous(label = x_axis_set[[deparse(substitute(chr))]], 
                          breaks = x_axis_set$center) +
       scale_color_manual(values = colors) + 
-      labs(title = main, x = 'Chromosome', y = ylab) + 
+      labs(title = main, x = 'Chromosome', y = ylab, color = NULL) + 
       theme_use
     print(manhattan)
     return(manhattan)
