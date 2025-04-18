@@ -12,8 +12,8 @@ library(scales)
 # main: string to plot as plot main title
 # colors: vector of hex codes or strings of color names in the R color list to use; if provided, must be the length of either the number of chromosomes (if multitrait=FALSE) or the number of traits (if multitrait = TRUE)
 # theme: object containing theme info to use instead of theme elements hard-coded here
-# species: name of species; currently supported: 'maize', 'sorghum', NULL
-plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TRUE, chromLengths=NULL, chr=CHROM, bp=POS, threshold=0.1, main=NULL, colors=NULL, theme=NULL, species=NULL)
+# species: name of species; currently supported: 'maize', 'sorghum'
+plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TRUE, chromLengths=NULL, chr=CHROM, bp=POS, threshold=0.1, main=NULL, colors=NULL, theme=NULL, species)
 {
   ylab <- 'RMIP'
   theme_use <- theme
