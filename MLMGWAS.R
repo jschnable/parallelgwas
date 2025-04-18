@@ -24,12 +24,11 @@ ind <- read_delim(str_c(geno_stem, ".geno.ind"), delim = '\t', col_names = FALSE
 
 pheno <- left_join(ind, pheno, join_by(X1==genotype)) %>% rename(genotype = X1)
 
-
 for(i in 2:ncol(pheno))
 {
-  imMVP<-MVP(phe = pheno[,c(1,i)], geno = genotype, map = map, K=Kinship, CV.FarmCPU=Covariates_PC,
-               nPC.FarmCPU = 3, maxLoop = 10, method = "FarmCPU", p.threshold = (0.05/EFFECTIVE_MARKERS), 
+  imMVP<-MVP(phe = pheno[,c(1,i)], geno = genotype, map = map, K=Kinship, CV.MLM=Covariates_PC,
+               nPC.MLM = 3, maxLine=10000, method = "MLM", method.bin="static", p.threshold = (0.05/EFFECTIVE_MARKERS), 
                threshold = (0.05/effective_ratio),
-               file.output = 'pmap.signal')
+               file.output = 'pmap.signal', vc.method="BRENT", ncpus=15)
 }
 

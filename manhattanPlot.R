@@ -18,8 +18,8 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
   ylab <- 'RMIP'
   theme_use <- theme
 
-  if(species=='maize' & is.null(chromLengths)){chromLengths= c(308452471, 243675191, 238017767, 250330460, 226353449, 181357234, 185808916, 182411202, 163004744, 152435371)}
-  if(species=='sorghum' & is.null(chromLengths)){chromLengths=c(85112863, 79114963, 80873341, 71215609, 77058072, 62713908, 68911884, 65779274, 63277606, 62870657)}
+  if(species=='maize' & is.null(chromLengths)){chromLength <-  tibble(max_bp = c(308452471, 243675191, 238017767, 250330460, 226353449, 181357234, 185808916, 182411202, 163004744, 152435371), {{ chr }} := 1:10)}
+  if(species=='sorghum' & is.null(chromLengths)){chromLength <- tibble(max_bp = c(85112863, 79114963, 80873341, 71215609, 77058072, 62713908, 68911884, 65779274, 63277606, 62870657), {{ chr }} := 1:10)}
   
   if(is.null(theme))
   {
@@ -43,12 +43,11 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
   
   if(!is.null(chromLengths))
   {
-    chromLength <- tibble(max_bp = chromLengths)
     data_cum <- data %>%
       group_by({{ chr }}) %>%
       summarise(n_snps = n()) %>%
+      full_join(chromLengths, join_by('{chr}')) %>%
       arrange({{ chr }}) %>% 
-      bind_cols(chromLength) %>%
       mutate(bp_add = lag(cumsum(max_bp), default = 0)) %>%
       select(c({{ chr }}, bp_add))
   }
