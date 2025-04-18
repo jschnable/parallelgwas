@@ -15,8 +15,8 @@ library(scales)
 plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TRUE, chromLengths=NULL, chr=CHROM, bp=POS, threshold=0.1, main=NULL, colors=NULL, theme=NULL)
 {
   ylab <- 'RMIP'
-  if(!resampling){ylab <-  expression(-log[10]~'(p)')}
   theme_use <- theme
+  
   if(is.null(theme))
   {
     theme_use <- theme_minimal() +
@@ -53,6 +53,14 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
     inner_join(data_cum, join_by({{ chr }})) %>%
     rowwise() %>%
     mutate(loc = {{ bp }} + bp_add)
+
+   if(!resampling)
+   {
+     ylab <-  expression(-log[10]~'(p)')
+     df <- df %>% 
+       rowwise() %>%
+       mutate({{ sig }} := -1*log10({{ sig }}))
+   }
   
   x_axis_set <- df %>% 
     group_by({{ chr }}) %>% 
