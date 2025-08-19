@@ -75,7 +75,9 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
       geom_hline(yintercept = threshold, linetype = 2, color = 'black') +
       scale_x_continuous(labels = chromLength[[deparse(substitute(chr))]], 
                          breaks = x_axis_set$center, 
-                         limits = c(0, xlimit)) +
+                         limits = c(0, xlimit), 
+                         expand = c(0, 0)) +
+      scale_y_continuous(expand = c(0, 0)) +
       scale_color_manual(values = colors) + 
       labs(title = main, x = 'Chromosome', y = ylab, color = NULL) + 
       theme_use + 
@@ -94,7 +96,9 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
       geom_hline(yintercept = threshold, linetype = 2, color = 'black') +
       scale_x_continuous(labels = chromLength[[deparse(substitute(chr))]], 
                          breaks = x_axis_set$center, 
-                       limits = c(0, xlimit)) +
+                         limits = c(0, xlimit), 
+                         expand = c(0, 0)) +
+      scale_y_continuous(expand = c(0, 0)) +
       scale_color_manual(values = colors) + 
       labs(title = main, x = 'Chromosome', y = ylab, color = NULL) + 
       theme_use
