@@ -1,5 +1,6 @@
 library(tidyverse)
 library(scales)
+library(ggrastr)
 # data: dataframe containing chromosome, bp, and significance (either RMIP or p-values) values for each marker
 # sig: column containing the significance values
 # multitrait: logical indicating if the plot should represent GWAS results for multiple phenotypes
@@ -71,7 +72,7 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
       colors <- hue_pal()(dim(n_traits)[1])
     }
     manhattan <- ggplot(df, aes(loc, {{ sig }}, color = as.factor(.data[[deparse(substitute(trait))]]))) + 
-      geom_point() + 
+      ggrastr::rasterise(geom_point()) + 
       geom_hline(yintercept = threshold, linetype = 2, color = 'black') +
       scale_x_continuous(labels = chromLength[[deparse(substitute(chr))]], 
                          breaks = x_axis_set$center, 
@@ -92,7 +93,7 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
       colors <- hue_pal()(dim(data_cum)[1])
     }
     manhattan <- ggplot(df, aes(loc, {{ sig }}, color = as.factor({{ chr }}))) + 
-      geom_point() + 
+      ggrastr::rasterise(geom_point()) + 
       geom_hline(yintercept = threshold, linetype = 2, color = 'black') +
       scale_x_continuous(labels = chromLength[[deparse(substitute(chr))]], 
                          breaks = x_axis_set$center, 
