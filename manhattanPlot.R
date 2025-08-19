@@ -72,7 +72,7 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
       colors <- hue_pal()(dim(n_traits)[1])
     }
     manhattan <- ggplot(df, aes(loc, {{ sig }}, color = as.factor(.data[[deparse(substitute(trait))]]))) + 
-      ggrastr::rasterise(geom_point()) + 
+      ggrastr::rasterise(geom_point(), dpi = 1000) + 
       geom_hline(yintercept = threshold, linetype = 2, color = 'black') +
       scale_x_continuous(labels = chromLength[[deparse(substitute(chr))]], 
                          breaks = x_axis_set$center, 
@@ -93,7 +93,7 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
       colors <- hue_pal()(dim(data_cum)[1])
     }
     manhattan <- ggplot(df, aes(loc, {{ sig }}, color = as.factor({{ chr }}))) + 
-      ggrastr::rasterise(geom_point()) + 
+      ggrastr::rasterise(geom_point(), dpi = 1000) + 
       geom_hline(yintercept = threshold, linetype = 2, color = 'black') +
       scale_x_continuous(labels = chromLength[[deparse(substitute(chr))]], 
                          breaks = x_axis_set$center, 
