@@ -18,8 +18,22 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
   ylab <- 'RMIP'
   theme_use <- theme
   chromLength <- tibble()
-  if(species=='maize'){chromLength <-  tibble(max_bp = c(308452471, 243675191, 238017767, 250330460, 226353449, 181357234, 185808916, 182411202, 163004744, 152435371), {{ chr }} := 1:10)}
-  if(species=='sorghum'){chromLength <- tibble(max_bp = c(85112863, 79114963, 80873341, 71215609, 77058072, 62713908, 68911884, 65779274, 63277606, 62870657), {{ chr }} := 1:10)}
+  if(species=='maize')
+  {
+    chromLength <-  tibble(max_bp = c(308452471, 243675191, 238017767, 250330460, 226353449, 
+                                      181357234, 185808916, 182411202, 163004744, 152435371), 
+                           {{ chr }} := 1:10) %>% 
+      arrange({{ chr }}) %>%
+      mutate(bp_add = lag(cumsum(max_bp), default = 0))
+  }
+  if(species=='sorghum')
+  {
+    chromLength <- tibble(max_bp = c(85112863, 79114963, 80873341, 71215609, 77058072, 
+                                     62713908, 68911884, 65779274, 63277606, 62870657), 
+                          {{ chr }} := 1:10) %>% 
+      arrange({{ chr }}) %>%
+      mutate(bp_add = lag(cumsum(max_bp), default = 0))
+  }
   n_chromosomes <- length(chromLength$max_bp)
   last_chr_len <- chromLength$max_bp[n_chromosomes]
   
@@ -36,14 +50,14 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
             line = element_line(color = 'black', linewidth = 1),
             panel.grid = element_blank())
   }
-  
-  data_cum <- data %>%
-      group_by({{ chr }}) %>%
-      summarise(n_snps = n()) %>%
-      full_join(chromLength, join_by( {{ chr }})) %>%
-      arrange({{ chr }}) %>% 
-      mutate(bp_add = lag(cumsum(max_bp), default = 0)) %>%
-      select(c({{ chr }}, bp_add))
+  data_cum <- chromLength
+  # data_cum <- data %>%
+  #     group_by({{ chr }}) %>%
+  #     summarise(n_snps = n()) %>%
+  #     full_join(chromLength, join_by( {{ chr }})) %>%
+  #     arrange({{ chr }}) %>% 
+  #     mutate(bp_add = lag(cumsum(max_bp), default = 0)) %>%
+  #     select(c({{ chr }}, bp_add))
   
   df <- data %>% 
     full_join(data_cum, join_by({{ chr }})) %>%
@@ -58,7 +72,7 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
        mutate({{ sig }} := -1*log10({{ sig }}))
    }
   xlimit <- last_chr_len + max(data_cum$bp_add)
-  x_axis_set <- data_cum %>% 
+  x_axis_set <- chromLength %>% 
     arrange({{ chr }}) %>% 
     mutate(center = (bp_add + lead(bp_add, default = xlimit))/2)
 
