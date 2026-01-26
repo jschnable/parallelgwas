@@ -71,6 +71,15 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
        rowwise() %>%
        mutate({{ sig }} := -1*log10({{ sig }}))
    }
+  yrange <- df %>% 
+    ungroup() %>%
+    summarise(yrange = (max({{ sig }}, na.rm = TRUE) - min({{ sig }}, na.rm = TRUE)))
+  yrange <- as.numeric(yrange[1, 1])
+  ylim <- df %>% 
+    ungroup() %>%
+    summarise(ylim = (max({{ sig }}, na.rm = TRUE) + 0.1*yrange))
+  ylim <- as.numeric(ylim[1, 1])
+
   xlimit <- last_chr_len + max(data_cum$bp_add)
   x_axis_set <- chromLength %>% 
     arrange({{ chr }}) %>% 
@@ -88,12 +97,19 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
     manhattan <- ggplot(df, aes(loc, {{ sig }}, color = as.factor(.data[[deparse(substitute(trait))]]))) + 
       ggrastr::rasterise(geom_point(), dpi = 1000) + 
       geom_hline(yintercept = threshold, linetype = 2, color = 'black') +
+      geom_rect(data = chromLength, inherit.aes = FALSE,
+                mapping = aes(xmin = bp_add, xmax = bp_add + max_bp, ymin = 0, ymax = 0.05*yrange,
+                              fill = as.factor(({{ chr }} %% 2)==0))) + 
       scale_x_continuous(labels = chromLength[[deparse(substitute(chr))]], 
                          breaks = x_axis_set$center, 
                          limits = c(0, xlimit), 
                          expand = c(0, 0)) +
-      scale_y_continuous(expand = c(0, 0)) +
+      scale_y_continuous(expand = c(0, 0), 
+                         limits = c(0, ylim)) +
+      coord_cartesian(clip = "off") + 
       scale_color_manual(values = colors) + 
+      scale_fill_manual(values = c('black', 'darkgrey'), 
+                        guide = 'none') +
       labs(title = main, x = 'Chromosome', y = ylab, color = NULL) + 
       theme_use + 
       theme(legend.position = 'top')
@@ -113,7 +129,9 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
                          breaks = x_axis_set$center, 
                          limits = c(0, xlimit), 
                          expand = c(0, 0)) +
-      scale_y_continuous(expand = c(0, 0)) +
+      scale_y_continuous(expand = c(0, 0), 
+                         limits = c(0, ylim)) +
+      coord_cartesian(clip = "off") + 
       scale_color_manual(values = colors) + 
       labs(title = main, x = 'Chromosome', y = ylab, color = NULL) + 
       theme_use

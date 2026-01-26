@@ -9,7 +9,7 @@ summariseSignals <- function(path)
   {
     df <- read_csv(f,
                    col_types = 'ccnccnnnn', 
-                   col_names = c('SNP', 'CHROM', 'POS', 'REF', 'ALT', 'MAF', 'Effect', 'SE', 'p-val'),
+                   col_names = c('SNP', 'CHROM', 'POS', 'REF', 'ALT', 'MAF', 'Effect', 'SE', 'pval'),
                    skip = 1) %>% 
       mutate(filename = f)
     signals <- bind_rows(signals, df)

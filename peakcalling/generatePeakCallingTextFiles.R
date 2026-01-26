@@ -33,11 +33,12 @@ generatePeakCallingTextFiles <- function(signals, trait, ld_file_prefix, traits_
       {
         end <- n_traits
       }
-      write.table(cur_list[[trait]][start:end], str_c(trait_list_prefix, f_num_total, '.txt'), quote = FALSE, row.names = FALSE, col.names = FALSE)
+      write.table(cur_list[[trait]][start:end], 
+                  str_c(trait_list_prefix, f_num_total, '.txt'), quote = FALSE, row.names = FALSE, col.names = FALSE)
       f_num_total <- f_num_total + 1
       ld_file_list <- c(ld_file_list, f)
       signal_file_list <- c(signal_file_list, signal_file_path)
-      chrom_list <- c(chrom_list, CHROM)
+      chrom_list <- c(chrom_list, cur_list$CHROM[end])
       f_num_ld_file <- f_num_ld_file + 1
       start <- end + 1
     }
@@ -47,9 +48,6 @@ generatePeakCallingTextFiles <- function(signals, trait, ld_file_prefix, traits_
   
   write.table(ld_file_list, str_c(file_list_prefix, '_ldfile.txt'), quote = FALSE, row.names = FALSE, col.names = FALSE)
   write.table(signal_file_list, str_c(file_list_prefix, '_signalfile.txt'), quote = FALSE, row.names = FALSE, col.names = FALSE)
-  write.table(str_c(trait_list_prefix, 1:(f_num_total-1), '.txt'), 
-              str_c(file_list_prefix, '_traitlistfile.txt'), 
-              quote = FALSE, row.names = FALSE, col.names = FALSE)
   write.table(chrom_list, str_c(file_list_prefix, '_chromfile.txt'), quote = FALSE, row.names = FALSE, col.names = FALSE)
   return(peakCallingList)
 }
