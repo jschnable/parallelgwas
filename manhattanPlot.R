@@ -13,7 +13,7 @@ library(ggrastr)
 # colors: vector of hex codes or strings of color names in the R color list to use; if provided, must be the length of either the number of chromosomes (if multitrait=FALSE) or the number of traits (if multitrait = TRUE)
 # theme: object containing theme info to use instead of theme elements hard-coded here
 # species: name of species; currently supported: 'maize', 'sorghum'
-plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TRUE, chr=CHROM, bp=POS, threshold=0.1, main=NULL, colors=NULL, theme=NULL, species)
+plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TRUE, chr=CHROM, bp=POS, threshold=0.1, main=NULL, colors=NULL, theme=NULL, species, chrGap = 0)
 {
   ylab <- 'RMIP'
   theme_use <- theme
@@ -24,7 +24,7 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
                                       181357234, 185808916, 182411202, 163004744, 152435371), 
                            {{ chr }} := 1:10) %>% 
       arrange({{ chr }}) %>%
-      mutate(bp_add = lag(cumsum(max_bp), default = 0) + (CHROM - 1)*1e7)
+      mutate(bp_add = lag(cumsum(max_bp), default = 0) + (CHROM - 1)*chrGap)
   }
   if(species=='sorghum')
   {
@@ -32,7 +32,7 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
                                      62713908, 68911884, 65779274, 63277606, 62870657), 
                           {{ chr }} := 1:10) %>% 
       arrange({{ chr }}) %>%
-      mutate(bp_add = lag(cumsum(max_bp), default = 0) + (CHROM - 1)*1e7)
+      mutate(bp_add = lag(cumsum(max_bp), default = 0) + (CHROM - 1)*chrGap)
   }
   n_chromosomes <- length(chromLength$max_bp)
   last_chr_len <- chromLength$max_bp[n_chromosomes]
@@ -98,14 +98,8 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
       ggrastr::rasterise(geom_point(), dpi = 1000) + 
       geom_hline(yintercept = threshold, linetype = 2, color = 'black') +
       geom_rect(data = chromLength, inherit.aes = FALSE,
-<<<<<<< HEAD
                 mapping = aes(xmin = bp_add, xmax = bp_add + max_bp, 
                               ymax = 0, ymin = -0.05*yrange,
-||||||| e727355
-                mapping = aes(xmin = bp_add, xmax = bp_add + max_bp, ymin = 0, ymax = 0.05*yrange,
-=======
-                mapping = aes(xmin = bp_add, xmax = bp_add + max_bp, ymax = 0, ymin = -0.05*yrange,
->>>>>>> f32b540698571a64697622e5f5dc1b7bf12d4d0e
                               fill = as.factor(({{ chr }} %% 2)==0))) + 
       scale_x_continuous(labels = chromLength[[deparse(substitute(chr))]], 
                          breaks = x_axis_set$center, 
@@ -118,8 +112,7 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
       scale_fill_manual(values = c('black', 'darkgrey'), 
                         guide = 'none') +
       labs(title = main, x = 'Chromosome', y = ylab, color = NULL) + 
-      theme_use + 
-      theme(legend.position = 'top')
+      theme_use 
     print(manhattan)
     return(manhattan)
   }
