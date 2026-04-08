@@ -98,8 +98,14 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
       ggrastr::rasterise(geom_point(), dpi = 1000) + 
       geom_hline(yintercept = threshold, linetype = 2, color = 'black') +
       geom_rect(data = chromLength, inherit.aes = FALSE,
+<<<<<<< HEAD
                 mapping = aes(xmin = bp_add, xmax = bp_add + max_bp, 
                               ymax = 0, ymin = -0.05*yrange,
+||||||| e727355
+                mapping = aes(xmin = bp_add, xmax = bp_add + max_bp, ymin = 0, ymax = 0.05*yrange,
+=======
+                mapping = aes(xmin = bp_add, xmax = bp_add + max_bp, ymax = 0, ymin = -0.05*yrange,
+>>>>>>> f32b540698571a64697622e5f5dc1b7bf12d4d0e
                               fill = as.factor(({{ chr }} %% 2)==0))) + 
       scale_x_continuous(labels = chromLength[[deparse(substitute(chr))]], 
                          breaks = x_axis_set$center, 
@@ -126,14 +132,19 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
     manhattan <- ggplot(df, aes(loc, {{ sig }}, color = as.factor({{ chr }}))) + 
       ggrastr::rasterise(geom_point(), dpi = 1000) + 
       geom_hline(yintercept = threshold, linetype = 2, color = 'black') +
+      geom_rect(data = chromLength, inherit.aes = FALSE,
+                mapping = aes(xmin = bp_add, xmax = bp_add + max_bp, ymax = 0, ymin = -0.05*yrange,
+                              fill = as.factor(({{ chr }} %% 2)==0))) + 
       scale_x_continuous(labels = chromLength[[deparse(substitute(chr))]], 
                          breaks = x_axis_set$center, 
                          limits = c(0, xlimit), 
                          expand = c(0, 0)) +
       scale_y_continuous(expand = c(0, 0), 
-                         limits = c(0, ylim)) +
+                         limits = c(-0.05*yrange, ylim)) +
+      scale_fill_manual(values = c('black', 'darkgrey'), 
+                        guide = 'none') +
       coord_cartesian(clip = "off") + 
-      scale_color_manual(values = colors) + 
+      scale_color_manual(values = colors, guide = NULL) + 
       labs(title = main, x = 'Chromosome', y = ylab, color = NULL) + 
       theme_use
     print(manhattan)
