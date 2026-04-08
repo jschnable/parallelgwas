@@ -24,7 +24,7 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
                                       181357234, 185808916, 182411202, 163004744, 152435371), 
                            {{ chr }} := 1:10) %>% 
       arrange({{ chr }}) %>%
-      mutate(bp_add = lag(cumsum(max_bp), default = 0))
+      mutate(bp_add = lag(cumsum(max_bp), default = 0) + (CHROM - 1)*1e7)
   }
   if(species=='sorghum')
   {
@@ -32,7 +32,7 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
                                      62713908, 68911884, 65779274, 63277606, 62870657), 
                           {{ chr }} := 1:10) %>% 
       arrange({{ chr }}) %>%
-      mutate(bp_add = lag(cumsum(max_bp), default = 0))
+      mutate(bp_add = lag(cumsum(max_bp), default = 0) + (CHROM - 1)*1e7)
   }
   n_chromosomes <- length(chromLength$max_bp)
   last_chr_len <- chromLength$max_bp[n_chromosomes]
@@ -98,14 +98,15 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
       ggrastr::rasterise(geom_point(), dpi = 1000) + 
       geom_hline(yintercept = threshold, linetype = 2, color = 'black') +
       geom_rect(data = chromLength, inherit.aes = FALSE,
-                mapping = aes(xmin = bp_add, xmax = bp_add + max_bp, ymin = 0, ymax = 0.05*yrange,
+                mapping = aes(xmin = bp_add, xmax = bp_add + max_bp, 
+                              ymax = 0, ymin = -0.05*yrange,
                               fill = as.factor(({{ chr }} %% 2)==0))) + 
       scale_x_continuous(labels = chromLength[[deparse(substitute(chr))]], 
                          breaks = x_axis_set$center, 
                          limits = c(0, xlimit), 
                          expand = c(0, 0)) +
       scale_y_continuous(expand = c(0, 0), 
-                         limits = c(0, ylim)) +
+                         limits = c(-0.05*yrange, ylim)) +
       coord_cartesian(clip = "off") + 
       scale_color_manual(values = colors) + 
       scale_fill_manual(values = c('black', 'darkgrey'), 
