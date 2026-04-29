@@ -80,7 +80,7 @@ plotManhattan <- function(data, sig, multitrait=FALSE, trait=NULL, resampling=TR
     summarise(ylim = (max({{ sig }}, na.rm = TRUE) + 0.1*yrange))
   ylim <- as.numeric(ylim[1, 1])
 
-  xlimit <- last_chr_len + max(data_cum$bp_add)
+  xlimit <- last_chr_len + max(data_cum$bp_add) + chrGap
   x_axis_set <- chromLength %>% 
     arrange({{ chr }}) %>% 
     mutate(center = (bp_add + lead(bp_add, default = xlimit))/2)
